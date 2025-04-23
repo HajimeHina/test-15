@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>GenGuide</title>
+  <link rel="icon" href="https://i.pinimg.com/736x/dd/d2/91/ddd291ac90bab7bf383be671ab46adca.jpg" type="image/x-icon" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: white;
+    }
+
+    .background {
+      background-image: url("https://images.alphacoders.com/134/1343095.png");
+      background-size: cover;
+      background-position: center;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      filter: blur(10px);
+      z-index: -1;
+    }
+
+    header {
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      font-size: 2em;
+    }
+
+    .content {
+      margin-top: 50px;
+      position: relative;
+      z-index: 1;
+      padding-bottom: 60px;
+    }
+
+    .content img {
+      width: 40%;
+      margin-bottom: 20px;
+    }
+
+    .search-bar {
+      width: 80%;
+      padding: 10px;
+      margin: 10px;
+      font-size: 1.2em;
+    }
+
+    .character-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .character-list li {
+      background-color: rgba(94, 44, 112, 0.85);
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .character-list li:hover {
+      background-color: rgba(118, 55, 140, 0.85);
+      transform: scale(1.02);
+    }
+
+    footer {
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .character-info {
+      display: none;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      max-width: 800px;
+      text-align: left;
+    }
+
+    .character-info.active {
+      display: block;
+    }
+
+    .character-info h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .character-info img {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: 0 auto 20px;
+      border-radius: 5px;
+    }
+
+    .close-btn {
+      float: right;
+      cursor: pointer;
+      font-size: 1.5em;
+      margin-top: -10px;
+    }
+
+    /* Kit table styles */
+    .kit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .kit-table th, .kit-table td {
+      border: 1px solid #5e2c70;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .kit-table th {
+      background-color: rgba(94, 44, 112, 0.7);
+      color: white;
+    }
+    
+    .kit-table tr:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+    
+    .talent-name {
+      font-weight: bold;
+      color: #ffcc00;
+    }
+    
+    .talent-desc {
+      font-size: 0.9em;
+    }
+    
+    .build-section {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(94, 44, 112, 0.3);
+      border-radius: 5px;
+    }
+    
+    .build-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    
+    .build-item {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="background"></div>
+
+  <header>
+    Welcome to GenGuide
+  </header>
+
+  <div class="content">
+    <img src="https://images5.alphacoders.com/133/1334085.jpeg" alt="Genshin Impact Logo" />
+    <h1>Your Guide To Build Every Character In The Game</h1>
+    <input class="search-bar" type="text" id="searchBar" onkeyup="searchCharacter()" placeholder="Search for a character..." />
+    <ul class="character-list" id="characterList"></ul>
+    
+    <div id="characterInfoContainer" class="character-info">
+      <span class="close-btn" onclick="closeCharacterInfo()">×</span>
+      <h2 id="characterName"></h2>
+      <img id="characterImage" src="" alt="Character Image">
+      <div id="characterDetails"></div>
+    </div>
+  </div>
+
+  <footer>
+    GenGuide - A Genshin Impact Character Guide
+  </footer>
+
+  <script>
+    const characters = [
+      {
+        name: "Albedo",
+        image: "https://i.pinimg.com/736x/fd/f0/7b/fdf07b9a2e290a6db48ddbbeedddeb92.jpg",
+        description: "A genius known as the Kreideprinz, he is the Chief Alchemist and Captain of the Investigation Team of the Knights of Favonius.",
+        vision: "Geo",
+        weapon: "Sword",
+        region: "Mondstadt",
+        rarity: 5,
+        kit: {
+          talents: [
+            {
+              name: "Favonius Bladework - Weiss",
+              type: "Normal Attack",
+              description: "Perform up to 5 rapid strikes."
+            },
+            {
+              name: "Abiogenesis: Solar Isotoma",
+              type: "Elemental Skill",
+              description: "Creates a Solar Isotoma that deals AoE Geo damage and elevates characters."
+            },
+            {
+              name: "Rite of Progeniture: Tectonic Tide",
+              type: "Elemental Burst",
+              description: "Deals AoE Geo damage and creates 7 Fatal Blossoms."
+            }
+          ],
+          constellations: [
+            "Flower of Eden:Transient Blossoms generated by Albedo's Abiogenesis: Solar Isotoma regenerate 1.2 Energy for Albedo", "Opening of Phanerozoic:Transient Blossoms generated by Abiogenesis: Solar Isotoma grant Albedo Fatal Reckoning for 30s. Unleashing Rite of Progeniture, Tectonic Tide consumes all stacks of Fatal Reckoning. Each stack of Fatal Reckoning consumed increases the DMG dealt by Fatal Blossoms and Rite of Progeniture, Tectonic Tide's burst DMG by 30% of Albedo's DEF. This effect stacks up to 4 times.", "Grace of Helios:Increases the Level of Abiogenesis: Solar Isotoma by 3.Maximum upgrade level is 15.", 
+            "Descent of Divinity:Active party members within the Solar Isotoma field have their Plunging Attack DMG increased by 30%.", "Tide of Hadean:Increases the Level of Rite of Progeniture: Tectonic Tide by 3.Maximum upgrade level is 15.", "Dust of Purification:Active party members within the Solar Isotoma field who are protected by a shield created by Crystallize have their DMG increased by 17%."
+          ],
+          bestWeapons: ["Cinnabar Spindle", "Harbinger of Dawn", "Festering Desire"],
+          bestArtifacts: ["Husk of Opulent Dreams", "Archaic Petra"],
+          artifactStats: ["DEF%", "Geo DMG Bonus", "CRIT Rate/DMG"],
+          artifactSubStats: ["CRIT DMG/RATE, DEF%, DEF"],	
+          talentPriority: ["Elemental Skill", "Elemental Burst", "Normal Attack"]
+        }
+      },
+      {
+        name: "Diluc",
+        image: "https://i.pinimg.com/736x/0e/9e/68/0e9e68c2c4d6d0a4c9f5c8a6c8b5e5e5.jpg",
+        description: "The tycoon of a winery empire in Mondstadt, unmatched in every possible way.",
+        vision: "Pyro",
+        weapon: "Claymore",
+        region: "Mondstadt",
+        rarity: 5,
+        kit: {
+          talents: [
+            {
+              name: "Tempered Sword",
+              type: "Normal Attack",
+              description: "Perform up to 4 consecutive strikes."
+            },
+            {
+              name: "Searing Onslaught",
+              type: "Elemental Skill",
+              description: "Performs a forward slash that deals Pyro damage (3 charges)."
+            },
+            {
+              name: "Dawn",
+              type: "Elemental Burst",
+              description: "Releases intense flames to knock back enemies and deal AoE Pyro damage."
+            }
+          ],
+          constellations: [
+            "Conviction", "Searing Ember", "Steel and Fire", 
+            "Flowing Flame", "Phoenix, Harbinger of Dawn", "Flaming Sword, Nemesis of Dark"
+          ],
+          bestWeapons: ["Wolf's Gravestone", "Serpent Spine", "Prototype Archaic"],
+          bestArtifacts: ["Crimson Witch of Flames", "Gladiator's Finale"],
+          artifactStats: ["ATK%", "Pyro DMG Bonus", "CRIT Rate/DMG"],
+          talentPriority: ["Normal Attack", "Elemental Skill", "Elemental Burst"]
+        }
+      },
+      {
+        name: "Jean",
+        image: "https://i.pinimg.com/736x/9a/9d/4a/9a9d4a4e4b4b4b4b4b4b4b4b4b4b4b4.jpg",
+        description: "The righteous and rigorous Dandelion Knight, and Acting Grand Master of the Knights of Favonius.",
+        vision: "Anemo",
+        weapon: "Sword",
+        region: "Mondstadt",
+        rarity: 5,
+        kit: {
+          talents: [
+            {
+              name: "Favonius Bladework",
+              type: "Normal Attack",
+              description: "Perform up to 5 rapid strikes."
+            },
+            {
+              name: "Gale Blade",
+              type: "Elemental Skill",
+              description: "Launches enemies with a miniature storm."
+            },
+            {
+              name: "Dandelion Breeze",
+              type: "Elemental Burst",
+              description: "Creates a Dandelion Field that launches enemies and regenerates HP."
+            }
+          ],
+          constellations: [
+            "Spiraling Tempest", "People's Aegis", "When the West Wind Arises",
+            "Lands of Dandelion", "Outbursting Wind", "Lion's Fang, Fair Protector of Mondstadt"
+          ],
+          bestWeapons: ["Aquila Favonia", "Skyward Blade", "Favonius Sword"],
+          bestArtifacts: ["Viridescent Venerer", "Noblesse Oblige"],
+          artifactStats: ["ATK%", "Anemo DMG Bonus", "Healing Bonus"],
+          talentPriority: ["Elemental Burst", "Elemental Skill", "Normal Attack"]
+        }
+      },
+      "The Traveler", "Alhaitham", "Aloy", "Amber", "Arataki Itto", "Arlecchino",
+      "Kamisato Ayaka", "Kamisato Ayato", "Baizhu", "Barbara", "Beidou", "Bennett"
+    ];
+
+    function populateCharacterList(filter = "") {
+      const list = document.getElementById("characterList");
+      list.innerHTML = "";
+
+      const filtered = characters.filter(char => {
+        const name = typeof char === 'string' ? char : char.name;
+        return name.toUpperCase().includes(filter.toUpperCase());
+      });
+
+      filtered.forEach(char => {
+        const li = document.createElement("li");
+        const name = typeof char === 'string' ? char : char.name;
+        li.textContent = name;
+        
+        li.addEventListener("click", function() {
+          showCharacterInfo(char);
+        });
+        
+        list.appendChild(li);
+      });
+    }
+
+    function searchCharacter() {
+      const query = document.getElementById("searchBar").value;
+      populateCharacterList(query);
+    }
+
+    function showCharacterInfo(character) {
+      const container = document.getElementById("characterInfoContainer");
+      const nameEl = document.getElementById("characterName");
+      const imageEl = document.getElementById("characterImage");
+      const detailsEl = document.getElementById("characterDetails");
+      
+      if (typeof character === 'string') {
+        nameEl.textContent = character;
+        imageEl.src = "https://via.placeholder.com/400x500?text=" + character;
+        detailsEl.innerHTML = `
+          <p>Detailed information for ${character} is not yet available.</p>
+          <p>Check back soon for updates!</p>
+        `;
+      } else {
+        nameEl.textContent = character.name;
+        imageEl.src = character.image;
+        imageEl.alt = character.name + " Image";
+        
+        let kitHTML = '';
+        if (character.kit) {
+          // Build the talents table
+          kitHTML += `
+            <h3>Talents</h3>
+            <table class="kit-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${character.kit.talents.map(talent => `
+                  <tr>
+                    <td>${talent.type}</td>
+                    <td class="talent-name">${talent.name}</td>
+                    <td class="talent-desc">${talent.description}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            
+            <div class="build-section">
+              <h3>Recommended Build</h3>
+              <p><strong>Talent Priority:</strong> ${character.kit.talentPriority.join(' > ')}</p>
+              
+              <p><strong>Best Weapons:</strong></p>
+              <div class="build-list">
+                ${character.kit.bestWeapons.map(weapon => `
+                  <span class="build-item">${weapon}</span>
+                `).join('')}
+              </div>
+              
+              <p><strong>Best Artifacts:</strong></p>
+              <div class="build-list">
+                ${character.kit.bestArtifacts.map(artifact => `
+                  <span class="build-item">${artifact}</span>
+                `).join('')}
+              </div>
+              
+              <p><strong>Main Stats Priority:</strong> ${character.kit.artifactStats.join(' / ')}</p>
+               <p><strong>Sub Stats Priority:</strong> ${character.kit.artifactSubStats}</p>
+            </div>
+            
+            <h3>Constellations</h3>
+            <ol>
+              ${character.kit.constellations.map((con, index) => `
+                <li><strong>C${index + 1}:</strong> ${con}</li>
+              `).join('')}
+            </ol>
+          `;
+        } else {
+          kitHTML = '<p>Kit information not available yet.</p>';
+        }
+        
+        detailsEl.innerHTML = `
+          <p><strong>Description:</strong> ${character.description}</p>
+          <p><strong>Vision:</strong> ${character.vision}</p>
+          <p><strong>Weapon:</strong> ${character.weapon}</p>
+          <p><strong>Region:</strong> ${character.region}</p>
+          <p><strong>Rarity:</strong> ${'★'.repeat(character.rarity)}</p>
+          
+          <h2>Character Kit</h2>
+          ${kitHTML}
+        `;
+      }
+      
+      container.classList.add("active");
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeCharacterInfo() {
+      document.getElementById("characterInfoContainer").classList.remove("active");
+    }
+
+    window.onload = function() {
+      populateCharacterList();
+    };
+  </script>
+</body>
+</html>
